@@ -25,6 +25,11 @@ def send_verification_email(email, code)
                   text: "Your verification code is: #{code}"
 end
 
+get '/health' do
+  status 200
+  { message: 'OK' }.to_json
+end
+
 # Route nhận yêu cầu HTTP POST để tạo mã xác thực
 post '/verify_code' do
   request.body.rewind
@@ -82,3 +87,4 @@ post '/validate_code' do
 
 # Cấu hình port và chạy server
 set :port, 4567
+set :bind, '0.0.0.0'

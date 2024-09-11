@@ -13,3 +13,6 @@ Content-Type: application/json
   "email": "nguyenducduypc160903@gmail.com",
   "code": "7ac57241"
 }
+
+###
+GET http://localhost:4567/health

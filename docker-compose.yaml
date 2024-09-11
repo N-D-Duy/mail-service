@@ -1,0 +1,14 @@
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: mail-service
+    image: duynguyen03/mail-service
+    ports:
+      - "4567:4567"
+    networks:
+      - mail-service-network
+networks:
+  mail-service-network:
+    driver: bridge
