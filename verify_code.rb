@@ -7,6 +7,10 @@ require 'dotenv'
 Dotenv.load
 
 # Cấu hình Redis
+puts ENV['REDIS_URL']
+puts ENV['MAILGUN_API_KEY']
+puts ENV['MAILGUN_HOST']
+
 REDIS = Redis.new(url: ENV['REDIS_URL'])
 API_KEY=ENV['MAILGUN_API_KEY']
 HOST=ENV['MAILGUN_HOST']
@@ -32,8 +36,14 @@ end
 
 # Route nhận yêu cầu HTTP POST để tạo mã xác thực
 post '/verify_code' do
-  request.body.rewind
-  data = JSON.parse(request.body.read)
+  #request.body.rewind
+  request_body = request.body.read
+
+    if request_body.empty?
+      halt 400, "Body is empty"
+    end
+
+    data = JSON.parse(request_body)
   email = data['email']
 
   if email.nil? || email.empty?
@@ -56,8 +66,14 @@ end
 
 # Route nhận yêu cầu HTTP POST để xác thực mã xác thực
 post '/validate_code' do
-    request.body.rewind
-    data = JSON.parse(request.body.read)
+    #request.body.rewind
+    request_body = request.body.read
+
+    if request_body.empty?
+      halt 400, "Body is empty"
+    end
+
+    data = JSON.parse(request_body)
     email = data['email']
     code = data['code']
   
@@ -87,4 +103,5 @@ post '/validate_code' do
 
 # Cấu hình port và chạy server
 set :port, 4567
+# cho phep truy cap tu ben ngoai
 set :bind, '0.0.0.0'

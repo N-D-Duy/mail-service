@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mail-service
+  labels:
+    app: mail-service
+    service: mail-service
+spec:
+  ports:
+  - port: 9080
+    targetPort: 4567
+    name: http
+  selector:
+    app: mail-service

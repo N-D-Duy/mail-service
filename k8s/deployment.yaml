@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mail-deployment
+  labels:
+    app: mail
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mail
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: mail
+        version: v1
+    spec:
+      serviceAccountName: mail-service-account
+      containers:
+      - name: mail
+        image: docker.io/duynguyen03/mail:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 4567

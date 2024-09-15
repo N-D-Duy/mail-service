@@ -1,4 +1,4 @@
-POST http://127.0.0.1:4567/verify_code
+POST http://localhost:4567/verify_code
 Content-Type: application/json
 
 {
@@ -6,12 +6,12 @@ Content-Type: application/json
 }
 
 ###
-POST http://127.0.0.1:4567/validate_code
+POST http://localhost:4567/validate_code
 Content-Type: application/json
 
 {
   "email": "nguyenducduypc160903@gmail.com",
-  "code": "7ac57241"
+  "code": "908ba141"
 }
 
 ###
