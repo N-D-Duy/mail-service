@@ -11,4 +11,5 @@ spec:
     targetPort: 4567
     name: http
   selector:
-    app: mail-service
+    app: mail
+    version: v1

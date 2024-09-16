@@ -1,4 +1,4 @@
-POST http://localhost:4567/verify_code
+POST http://localhost:4567/api/v1/mail/verify_code
 Content-Type: application/json
 
 {
@@ -6,13 +6,21 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:4567/validate_code
+POST https://api.duynguyendev.xyz/api/v1/mail/verify_code
+Content-Type: application/json
+
+{
+  "email": "nguyenducduypc160903@gmail.com"
+}
+
+###
+POST https://api.duynguyendev.xyz/api/v1/mail/validate_code
 Content-Type: application/json
 
 {
   "email": "nguyenducduypc160903@gmail.com",
-  "code": "908ba141"
+  "code": "645c2434"
 }
 
 ###
-GET http://localhost:4567/health
+GET https://api.duynguyendev.xyz/api/v1/mail/health

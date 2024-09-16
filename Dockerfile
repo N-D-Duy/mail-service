@@ -1,8 +1,12 @@
 # Chọn image cơ sở với Ruby
-FROM ruby:3.2
+FROM ruby:3.1.6-alpine
 
-# Cài đặt Node.js (nếu cần cho các gem hoặc asset)
-# RUN apt-get update -qq && apt-get install -y nodejs
+# Cài đặt các công cụ xây dựng và thư viện cần thiết
+RUN apk update && apk add --no-cache \
+  build-base \
+  libpq-dev \
+  nodejs \
+  npm
 
 # Tạo thư mục làm việc trong container
 WORKDIR /app
