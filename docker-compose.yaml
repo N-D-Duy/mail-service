@@ -4,11 +4,13 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: mail-service
-    image: duynguyen03/mail:v1
     ports:
       - "4567:4567"
+    env_file:
+      - .env
+    restart: always
     networks:
-      - mail-service-network
+      - health-management_health-management-network
 networks:
-  mail-service-network:
-    driver: bridge
+  health-management_health-management-network:
+    external: true

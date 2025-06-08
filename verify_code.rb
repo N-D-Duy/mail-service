@@ -4,12 +4,16 @@ require 'rest-client'
 require 'securerandom'
 require 'json'
 require 'dotenv'
+
 Dotenv.load
+
+before do
+  content_type :json  # <-- ✅ This ensures all responses are JSON
+end
 
 REDIS = Redis.new(url: ENV['REDIS_URL'])
 API_KEY = ENV['MAILGUN_API_KEY']
 DOMAIN = ENV['MAILGUN_HOST']
-# Hàm sinh mã xác thực
 def generate_verification_code
   SecureRandom.hex(4) # Tạo mã xác thực ngẫu nhiên, dài 8 ký tự
 end
@@ -17,7 +21,6 @@ end
 ENDPOINT = "https://api:#{API_KEY}@api.mailgun.net/v3/#{DOMAIN}/messages"
 
 
-# Hàm gửi email qua Mailgun
 def send_verification_email(email, code)
   puts "host: #{ENDPOINT}"
   RestClient.post ENDPOINT,
@@ -32,9 +35,7 @@ get '/api/v1/mail/health' do
   { message: 'OK' }.to_json
 end
 
-# Route nhận yêu cầu HTTP POST để tạo mã xác thực
 post '/api/v1/mail/verify_code' do
-  #request.body.rewind
   request_body = request.body.read
 
     if request_body.empty?
@@ -51,10 +52,8 @@ post '/api/v1/mail/verify_code' do
 
   verification_code = generate_verification_code
 
-  # Lưu mã xác thực vào Redis với TTL 5 phút
   REDIS.setex("verify_code:#{email}", 5 * 60, verification_code)
 
-  # Gửi mã xác thực qua email
   send_verification_email(email, verification_code)
 
   status 200
@@ -64,7 +63,6 @@ end
 
 # Route nhận yêu cầu HTTP POST để xác thực mã xác thực
 post '/api/v1/mail/validate_code' do
-    #request.body.rewind
     request_body = request.body.read
 
     if request_body.empty?
@@ -80,7 +78,6 @@ post '/api/v1/mail/validate_code' do
       return { error: 'Email and code are required' }.to_json
     end
   
-    # Lấy mã xác thực từ Redis
     stored_code = REDIS.get("verify_code:#{email}")
   
     if stored_code.nil?
