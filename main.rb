@@ -30,6 +30,14 @@ def send_verification_email(email, code)
                   text: "Your verification code is: #{code}, valid for 5 minutes, please do not share this code with anyone."
 end
 
+def send_custom_email(email, content)
+  RestClient.post ENDPOINT,
+                  from: "Health Center <mailgun@#{DOMAIN}>",
+                  to: email,
+                  subject: "Message from Health Center",
+                  text: content
+end
+
 get '/api/v1/mail/health' do
   status 200
   { message: 'OK' }.to_json
@@ -95,6 +103,28 @@ post '/api/v1/mail/validate_code' do
       { error: 'Invalid verification code' }.to_json
     end
   end
+
+post '/api/v1/mail/send_custom' do
+  request_body = request.body.read
+
+  if request_body.empty?
+    halt 400, "Body is empty"
+  end
+
+  data = JSON.parse(request_body)
+  email = data['email']
+  content = data['content']
+
+  if email.nil? || email.empty? || content.nil? || content.empty?
+    status 400
+    return { error: 'Email and content are required' }.to_json
+  end
+
+  send_custom_email(email, content)
+
+  status 200
+  { message: "Custom email sent to #{email}" }.to_json
+end
 
 # Cấu hình port và chạy server
 set :port, 4567

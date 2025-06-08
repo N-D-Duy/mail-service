@@ -22,4 +22,4 @@ RUN bundle install
 COPY . /app
 
 # Chạy ứng dụng Sinatra khi container khởi động
-CMD ["ruby", "verify_code.rb"]
+CMD ["ruby", "main.rb"]
