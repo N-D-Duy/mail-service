@@ -8,14 +8,14 @@ require 'dotenv'
 Dotenv.load
 
 before do
-  content_type :json  # <-- ✅ This ensures all responses are JSON
+  content_type :json 
 end
 
 REDIS = Redis.new(url: ENV['REDIS_URL'])
 API_KEY = ENV['MAILGUN_API_KEY']
 DOMAIN = ENV['MAILGUN_HOST']
 def generate_verification_code
-  SecureRandom.hex(4) # Tạo mã xác thực ngẫu nhiên, dài 8 ký tự
+  SecureRandom.hex(4)
 end
 
 ENDPOINT = "https://api:#{API_KEY}@api.mailgun.net/v3/#{DOMAIN}/messages"
@@ -69,7 +69,6 @@ post '/api/v1/mail/verify_code' do
 end
 
 
-# Route nhận yêu cầu HTTP POST để xác thực mã xác thực
 post '/api/v1/mail/validate_code' do
     request_body = request.body.read
 
@@ -94,7 +93,6 @@ post '/api/v1/mail/validate_code' do
     end
   
     if stored_code == code
-      # Xóa mã xác thực khỏi Redis sau khi xác thực thành công
       REDIS.del("verify_code:#{email}")
       status 200
       { message: 'Verification code is valid' }.to_json
