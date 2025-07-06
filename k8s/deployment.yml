@@ -20,7 +20,7 @@ spec:
       serviceAccountName: mail-service-account
       containers:
       - name: mail
-        image: docker.io/duynguyen03/mail:v2
+        image: docker.io/duynguyen03/mail-service:v1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 4567

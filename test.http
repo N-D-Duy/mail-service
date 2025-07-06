@@ -2,11 +2,11 @@ POST http://localhost:4567/api/v1/mail/verify_code
 Content-Type: application/json
 
 {
-  "email": "nguyenducduypc160903@gmail.com"
+  "email": "nguyenducduy20082003@gmail.com"
 }
 
 ###
-POST https://api.duynguyendev.xyz/api/v1/mail/verify_code
+POST https://api.ndwcdy.me/api/v1/mail/verify_code
 Content-Type: application/json
 
 {
@@ -14,16 +14,16 @@ Content-Type: application/json
 }
 
 ###
-POST https://api.duynguyendev.xyz/api/v1/mail/validate_code
+POST https://api.ndwcdy.me/api/v1/mail/validate_code
 Content-Type: application/json
 
 {
   "email": "nguyenducduypc160903@gmail.com",
-  "code": "645c2434"
+  "code": "66dc8e91"
 }
 
 ###
-GET https://api.duynguyendev.xyz/api/v1/mail/health
+GET https://api.ndwcdy.me/api/v1/mail/health
 
 ###
 POST http://localhost:4567/api/v1/mail/send_custom
@@ -32,4 +32,13 @@ Content-Type: application/json
 {
   "email": "nguyenducduypc160903@gmail.com",
   "content": "Your appointment has been cancelled, please reschedule your appointment or get your refund. click here: https://google.com"
+}
+
+###
+POST https://api.ndwcdy.me/api/v1/mail/send_custom
+Content-Type: application/json
+
+{
+  "email": "nguyenducduypc160903@gmail.com",
+  "content": "test production"
 }
