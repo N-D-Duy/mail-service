@@ -43,6 +43,24 @@ def send_verification_email(email, code)
   end
 end
 
+# Hàm gửi email tùy chỉnh qua SMTP
+def send_custom_email(email, content)
+  begin
+    mail = Mail.new do
+      from    'Health Center <' + ENV['SMTP_USERNAME'] + '>'
+      to      email
+      subject 'Message from Health Center'
+      body    content
+    end
+    
+    mail.deliver!
+    puts "Custom email sent successfully to #{email}"
+  rescue => e
+    puts "Failed to send custom email: #{e.message}"
+    raise e
+  end
+end
+
 get '/api/v1/mail/health' do
   status 200
   { message: 'OK' }.to_json
@@ -120,6 +138,33 @@ post '/api/v1/mail/validate_code' do
       { error: 'Invalid verification code' }.to_json
     end
   end
+
+# Route nhận yêu cầu HTTP POST để gửi email tùy chỉnh
+post '/api/v1/mail/send_custom' do
+  request_body = request.body.read
+
+  if request_body.empty?
+    halt 400, "Body is empty"
+  end
+
+  data = JSON.parse(request_body)
+  email = data['email']
+  content = data['content']
+
+  if email.nil? || email.empty? || content.nil? || content.empty?
+    status 400
+    return { error: 'Email and content are required' }.to_json
+  end
+
+  begin
+    send_custom_email(email, content)
+    status 200
+    { message: "Custom email sent to #{email}" }.to_json
+  rescue => e
+    status 500
+    { error: "Failed to send email: #{e.message}" }.to_json
+  end
+end
 
 # Cấu hình port và chạy server
 set :port, 4567
