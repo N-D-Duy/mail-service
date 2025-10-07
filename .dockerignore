@@ -1,3 +1,27 @@
+# Git files
 .git
+.gitignore
+
+# Environment files (these should be provided via environment variables)
 .env
-k8s .k8s
+.env.example
+
+# Local bundle directory
+vendor/bundle
+.bundle
+
+# Development files
+k8s
+*.md
+README.md
+
+# IDE files
+.vscode
+.idea
+
+# Log files
+*.log
+
+# Temporary files
+tmp/
+.tmp

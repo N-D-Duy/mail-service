@@ -1,30 +1,46 @@
 require 'sinatra'
 require 'redis'
-require 'rest-client'
+require 'mail'
 require 'securerandom'
 require 'json'
 require 'dotenv'
 Dotenv.load
 
 REDIS = Redis.new(url: ENV['REDIS_URL'])
-API_KEY = ENV['MAILGUN_API_KEY']
-DOMAIN = ENV['MAILGUN_HOST']
+
+# SMTP Configuration
+Mail.defaults do
+  delivery_method :smtp, {
+    address: ENV['SMTP_HOST'] || 'smtp.gmail.com',
+    port: (ENV['SMTP_PORT'] || 587).to_i,
+    user_name: ENV['SMTP_USERNAME'],
+    password: ENV['SMTP_PASSWORD'],
+    authentication: :plain,
+    enable_starttls_auto: true
+  }
+end
 # Hàm sinh mã xác thực
 def generate_verification_code
   SecureRandom.hex(4) # Tạo mã xác thực ngẫu nhiên, dài 8 ký tự
 end
 
-ENDPOINT = "https://api:#{API_KEY}@api.mailgun.net/v3/#{DOMAIN}/messages"
-
-
-# Hàm gửi email qua Mailgun
+# Hàm gửi email qua SMTP
 def send_verification_email(email, code)
-  puts "host: #{ENDPOINT}"
-  RestClient.post ENDPOINT,
-                  from: "Health Center <mailgun@#{DOMAIN}>",
-                  to: email,
-                  subject: "Your Verification Code From Health Center",
-                  text: "Your verification code is: #{code}, valid for 5 minutes, please do not share this code with anyone."
+  begin
+    mail = Mail.new do
+      from    'Health Center <' + ENV['SMTP_USERNAME'] + '>'
+      #from    ENV['SMTP_USERNAME'] || '
+      to      email
+      subject 'Your Verification Code From Health Center'
+      body    "Your verification code is: #{code}, valid for 5 minutes, please do not share this code with anyone."
+    end
+    
+    mail.deliver!
+    puts "Email sent successfully to #{email}"
+  rescue => e
+    puts "Failed to send email: #{e.message}"
+    raise e
+  end
 end
 
 get '/api/v1/mail/health' do
@@ -55,10 +71,16 @@ post '/api/v1/mail/verify_code' do
   REDIS.setex("verify_code:#{email}", 5 * 60, verification_code)
 
   # Gửi mã xác thực qua email
-  send_verification_email(email, verification_code)
-
-  status 200
-  { message: "Verification code sent to #{email}" }.to_json
+  begin
+    send_verification_email(email, verification_code)
+    status 200
+    { message: "Verification code sent to #{email}" }.to_json
+  rescue => e
+    # If email sending fails, remove the verification code from Redis
+    REDIS.del("verify_code:#{email}")
+    status 500
+    { error: "Failed to send email: #{e.message}" }.to_json
+  end
 end
 
 

@@ -24,3 +24,21 @@ Content-Type: application/json
 
 ###
 GET https://api.duynguyendev.xyz/api/v1/mail/health
+
+###
+POST http://localhost:4567/api/v1/mail/verify_code
+Content-Type: application/json
+
+{
+  "email": "nllsover8.0@gmail.com"
+}
+
+
+###
+POST http://localhost:4567/api/v1/mail/validate_code
+Content-Type: application/json
+
+{
+  "email": "nllsover8.0@gmail.com",
+  "code": "8ab0f4a0"
+}

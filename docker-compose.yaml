@@ -7,6 +7,12 @@ services:
     image: duynguyen03/mail:v1
     ports:
       - "4567:4567"
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
     networks:
       - mail-service-network
 networks:

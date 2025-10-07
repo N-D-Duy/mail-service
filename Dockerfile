@@ -1,25 +1,18 @@
-# Chọn image cơ sở với Ruby
-FROM ruby:3.1.6-alpine
+# Simple Ruby application
+FROM ruby:3.2
 
-# Cài đặt các công cụ xây dựng và thư viện cần thiết
-RUN apk update && apk add --no-cache \
-  build-base \
-  libpq-dev \
-  nodejs \
-  npm
-
-# Tạo thư mục làm việc trong container
+# Set working directory
 WORKDIR /app
 
-# Sao chép Gemfile và Gemfile.lock vào thư mục làm việc
-COPY Gemfile /app/Gemfile
-COPY Gemfile.lock /app/Gemfile.lock
-
-# Cài đặt các gem
+# Copy and install gems
+COPY Gemfile* ./
 RUN bundle install
 
-# Sao chép mã nguồn ứng dụng vào thư mục làm việc
-COPY . /app
+# Copy application
+COPY . .
 
-# Chạy ứng dụng Sinatra khi container khởi động
+# Expose port
+EXPOSE 4567
+
+# Run application
 CMD ["ruby", "verify_code.rb"]
