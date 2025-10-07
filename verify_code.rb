@@ -62,12 +62,14 @@ def send_custom_email(email, content)
 end
 
 get '/api/v1/mail/health' do
+  content_type :json
   status 200
   { message: 'OK' }.to_json
 end
 
 # Route nhận yêu cầu HTTP POST để tạo mã xác thực
 post '/api/v1/mail/verify_code' do
+  content_type :json
   #request.body.rewind
   request_body = request.body.read
 
@@ -104,6 +106,7 @@ end
 
 # Route nhận yêu cầu HTTP POST để xác thực mã xác thực
 post '/api/v1/mail/validate_code' do
+    content_type :json
     #request.body.rewind
     request_body = request.body.read
 
@@ -141,6 +144,7 @@ post '/api/v1/mail/validate_code' do
 
 # Route nhận yêu cầu HTTP POST để gửi email tùy chỉnh
 post '/api/v1/mail/send_custom' do
+  content_type :json
   request_body = request.body.read
 
   if request_body.empty?
